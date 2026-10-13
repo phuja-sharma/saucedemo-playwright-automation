@@ -65,4 +65,45 @@ test.describe('latihan cart pom', () => {
             page.locator('[data-test="shopping-cart-badge"]')
         ).not.toBeVisible();
     });
+
+    test('TC-CART-003 menambahkan 2 produk ke cart, lalu menghapus 1 produk', async ({page}) => {
+        const inventoryPage = new InventoryPage(page);
+        const cartPage = new CartPage(page);
+
+        await expect(page).toHaveURL(/inventory.html/);
+
+        await inventoryPage.addBackpackToCart();
+
+        await inventoryPage.addBikeLightToCart();
+
+        await expect(
+            page.locator('[data-test="shopping-cart-badge"]')
+        ).toHaveText('2');
+
+        await cartPage.openCart();
+
+        await expect(page).toHaveURL(/cart.html/);
+
+        await expect(
+            page.locator('[data-test="item-4-title-link"]')
+        ).toBeVisible();
+
+        await expect(
+            page.locator('[data-test="item-0-title-link"]')
+        ).toBeVisible();
+
+        await cartPage.removeBackpack();
+
+        await expect(
+            page.locator('[data-test="item-4-title-link"]')
+        ).not.toBeVisible();
+
+        await expect(
+            page.locator('[data-test="shopping-cart-badge"]')
+        ).toHaveText('1');
+
+        await expect(
+            page.locator('[data-test="item-0-title-link"]')
+        ).toBeVisible();
+    });
 });

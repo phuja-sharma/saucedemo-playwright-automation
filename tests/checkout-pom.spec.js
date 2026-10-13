@@ -84,3 +84,23 @@ test('TC-CHECKOUT-002 - checkout gagal ketika last name kosong', async ({page}) 
         page.locator('[data-test="error"]')
     ).toHaveText('Error: Last Name is required');
 })
+
+test('TC-CHECKOUT-003 - Checkout gagal ketika semua field informasi dikosongkan', async ({page}) => {
+    const checkoutPage = new CheckoutPage(page);
+    
+    await goToCheckoutStepOne(page);
+
+    await checkoutPage.fillCheckoutInformation(
+        '',
+        '',
+        ''
+    );
+
+    await checkoutPage.clickContinue();
+
+    await expect(
+        page.locator('[data-test="error"]')
+    ).toHaveText('Error: First Name is required');
+
+    await expect(page).toHaveURL(/checkout-step-one.html/);    
+});
